@@ -1,0 +1,17 @@
+{{- if and .Values.persistence.logs.enabled (not .Values.persistence.logs.existingClaim) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "elasticsearch.fullname" . }}-logs
+  namespace: {{ .Release.Namespace }}
+  labels: {{ include "elasticsearch.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  storageClassName: {{ .Values.persistence.storageClass }}
+  accessModes:
+    - {{ .Values.persistence.logs.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.logs.size | quote }}
+{{- end }}

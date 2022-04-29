@@ -1,0 +1,17 @@
+{{- if and .Values.persistence.data.enabled (not .Values.persistence.data.existingClaim) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "elasticsearch.fullname" . }}-data
+  namespace: {{ .Release.Namespace }}
+  labels: {{ include "elasticsearch.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  storageClassName: {{ .Values.persistence.storageClass }}
+  accessModes:
+    - {{ .Values.persistence.data.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.data.size | quote }}
+{{- end }}

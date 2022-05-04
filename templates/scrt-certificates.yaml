@@ -1,0 +1,14 @@
+{{- if .Values.configuration.tls.enabled }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "elasticsearch.fullname" . }}-certificates
+  namespace: {{ .Release.Namespace }}
+  labels: {{ include "elasticsearch.labels" . | nindent 4 }}
+data:
+  root-ca.pem: {{ .Values.configuration.tls.certificates.caCertificate | b64enc | quote }}
+  server.pem: {{ .Values.configuration.tls.certificates.serverCertificate | b64enc | quote }}
+  private_key.pem: {{ .Values.configuration.tls.certificates.serverKey | b64enc | quote }}
+  client.pem: {{ .Values.configuration.tls.certificates.clientCertificate | b64enc | quote }}
+  client.key: {{ .Values.configuration.tls.certificates.clientKey | b64enc | quote }}
+{{- end }}
